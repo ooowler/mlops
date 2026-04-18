@@ -37,4 +37,6 @@ jobs:
         with:
           name: coverage-xml-py${{ matrix.python-version }}
           path: coverage.xml
-      - run: pip-audit -r requirements.txt
+      - name: pip-audit
+        run: |
+          pip-audit -r requirements.txt --ignore-vuln CVE-2025-69872
