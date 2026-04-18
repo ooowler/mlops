@@ -1,0 +1,7 @@
+train:
+  model: rf
+  experiment: fraud_detection
+  max_rows: -1
+  n_estimators: -1
+  random_state: -1
+  logreg_max_iter: 1000

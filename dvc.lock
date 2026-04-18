@@ -1,0 +1,116 @@
+schema: '2.0'
+stages:
+  load:
+    cmd: python scripts/load_data.py
+    deps:
+    - path: data/raw/creditcard.csv
+      hash: md5
+      md5: e8fa7f28232fbeff196680cb1b04fad2
+      size: 8688539
+    - path: scripts/load_data.py
+      hash: md5
+      md5: f809fbb421a83d631675e06fb033f97e
+      size: 982
+    - path: src/fraud_detection/config.py
+      hash: md5
+      md5: 9dcfa39536cc8425d6a8a732a8c58241
+      size: 528
+    - path: src/fraud_detection/data_loader.py
+      hash: md5
+      md5: 696acec69f87a3dac173ea6918b9dc0f
+      size: 1247
+    - path: src/fraud_detection/data_quality.py
+      hash: md5
+      md5: 1b411bb135ae2eeebb8de6922b640c6e
+      size: 1618
+    - path: src/fraud_detection/errors.py
+      hash: md5
+      md5: 8561f4775f3a4b6711a56c6aea8a14d8
+      size: 531
+    outs:
+    - path: data/meta/raw_report.json
+      hash: md5
+      md5: a28f8c2bf586807bcaafd22e8998b066
+      size: 345
+  preprocess:
+    cmd: python scripts/preprocess.py
+    deps:
+    - path: data/meta/raw_report.json
+      hash: md5
+      md5: a28f8c2bf586807bcaafd22e8998b066
+      size: 345
+    - path: data/raw/creditcard.csv
+      hash: md5
+      md5: e8fa7f28232fbeff196680cb1b04fad2
+      size: 8688539
+    - path: scripts/preprocess.py
+      hash: md5
+      md5: c2f84e524364984d0873daf68f963094
+      size: 520
+    - path: src/fraud_detection/config.py
+      hash: md5
+      md5: 9dcfa39536cc8425d6a8a732a8c58241
+      size: 528
+    - path: src/fraud_detection/data_loader.py
+      hash: md5
+      md5: 696acec69f87a3dac173ea6918b9dc0f
+      size: 1247
+    - path: src/fraud_detection/errors.py
+      hash: md5
+      md5: 8561f4775f3a4b6711a56c6aea8a14d8
+      size: 531
+    - path: src/fraud_detection/preprocess.py
+      hash: md5
+      md5: c0ff670af691cd43bb77e8fea13311cc
+      size: 1763
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: ae35d41a3626063a50d1cd84ce28be9c
+      size: 972876
+    - path: data/processed/train.csv
+      hash: md5
+      md5: dfac0a12165e2a1014888f263ff0aba5
+      size: 3890599
+  train:
+    cmd: python scripts/train.py --model rf --experiment fraud_detection --max-rows
+      -1 --n-estimators -1 --random-state -1 --logreg-max-iter 1000
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: ae35d41a3626063a50d1cd84ce28be9c
+      size: 972876
+    - path: data/processed/train.csv
+      hash: md5
+      md5: dfac0a12165e2a1014888f263ff0aba5
+      size: 3890599
+    - path: params.yaml
+      hash: md5
+      md5: 8d1677bc045f9f9ae507882019cb83d5
+      size: 126
+    - path: scripts/train.py
+      hash: md5
+      md5: 58792cebfd2f974165c2148ba45758d7
+      size: 4647
+    - path: src/fraud_detection/config.py
+      hash: md5
+      md5: 9dcfa39536cc8425d6a8a732a8c58241
+      size: 528
+    - path: src/fraud_detection/errors.py
+      hash: md5
+      md5: 8561f4775f3a4b6711a56c6aea8a14d8
+      size: 531
+    params:
+      params.yaml:
+        train.experiment: fraud_detection
+        train.logreg_max_iter: 1000
+        train.max_rows: -1
+        train.model: rf
+        train.n_estimators: -1
+        train.random_state: -1
+    outs:
+    - path: models/rf
+      hash: md5
+      md5: f6b81f58a5ff11da7abfc31e189944bc.dir
+      size: 1087851
+      nfiles: 5

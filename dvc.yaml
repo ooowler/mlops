@@ -1,0 +1,44 @@
+stages:
+  load:
+    cmd: python scripts/load_data.py
+    deps:
+      - data/raw/creditcard.csv
+      - scripts/load_data.py
+      - src/fraud_detection/data_loader.py
+      - src/fraud_detection/data_quality.py
+      - src/fraud_detection/config.py
+      - src/fraud_detection/errors.py
+    outs:
+      - data/meta/raw_report.json
+  preprocess:
+    cmd: python scripts/preprocess.py
+    deps:
+      - data/raw/creditcard.csv
+      - data/meta/raw_report.json
+      - scripts/preprocess.py
+      - src/fraud_detection/preprocess.py
+      - src/fraud_detection/data_loader.py
+      - src/fraud_detection/config.py
+      - src/fraud_detection/errors.py
+    outs:
+      - data/processed/train.csv
+      - data/processed/test.csv
+  train:
+    cmd: python scripts/train.py --model ${train.model} --experiment ${train.experiment} --max-rows ${train.max_rows} --n-estimators ${train.n_estimators} --random-state ${train.random_state} --logreg-max-iter ${train.logreg_max_iter}
+    params:
+      - params.yaml:
+          - train.model
+          - train.experiment
+          - train.max_rows
+          - train.n_estimators
+          - train.random_state
+          - train.logreg_max_iter
+    deps:
+      - params.yaml
+      - data/processed/train.csv
+      - data/processed/test.csv
+      - scripts/train.py
+      - src/fraud_detection/config.py
+      - src/fraud_detection/errors.py
+    outs:
+      - models/rf
